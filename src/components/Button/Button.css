@@ -1,0 +1,30 @@
+.buttonContainer {
+  .button {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: #f16524;
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .outline {
+    background-color: white;
+    color: #f16524;
+    border: 2px solid #f16524;
+  }
+  .disable {
+    background: #ced0d3;
+    cursor: not-allowed;
+  }
+  .reducePadding {
+    padding: 0;
+  }
+  .loader {
+    height: 48px;
+    width: auto;
+  }
+}

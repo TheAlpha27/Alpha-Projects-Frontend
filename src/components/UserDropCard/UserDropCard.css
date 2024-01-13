@@ -1,0 +1,39 @@
+.UserDropCard {
+  border-radius: 10px;
+  background: #f7f9fb;
+  display: flex;
+  padding: 8px;
+  gap: 12px;
+  position: relative;
+  .details {
+    .name {
+      color: #33393d;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .userType {
+      color: #8f9ba4;
+      font-size: 12px;
+      font-size: 12px;
+    }
+  }
+  .option {
+    position: absolute;
+    border-radius: 10px;
+    background: #f7f9fb;
+    color: #33393d;
+    font-size: 14px;
+    top: 59px;
+    right: 0px;
+    z-index: 1005;
+    font-weight: 500;
+    padding: 0;
+    .optionItem {
+      padding: 8px;
+      border-radius: 10px;
+    }
+    .optionItem:hover {
+      background-color: #e7e9eb;
+    }
+  }
+}

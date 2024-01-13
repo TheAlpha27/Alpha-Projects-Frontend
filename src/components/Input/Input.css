@@ -1,0 +1,93 @@
+.input {
+  border: 1px solid #e0e5eb;
+  border-radius: 12px;
+  height: 56px;
+  width: 100%;
+  color: #33393d;
+  font-size: 16px;
+  padding-left: 20px;
+  box-shadow: none;
+  cursor: text;
+}
+
+.error {
+  border: 1px solid #de1c22;
+  background: #fbe5e6;
+  color: #de1c22;
+}
+
+.passIcon {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  cursor: pointer;
+}
+
+.input:focus + .label,
+.input:valid + .label {
+  font-size: 12px;
+  color: #afbdcf;
+  top: -5px;
+  left: 10px;
+  background: #ffffff;
+  padding: 0px 5px 0px 5px;
+}
+
+.inputContainer {
+  width: auto;
+  height: auto;
+  position: relative;
+}
+
+.inputContainer .label {
+  font-size: 16px;
+  color: #6b778c;
+  padding: 14px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+  pointer-events: none;
+}
+
+.input:focus {
+  outline: none;
+}
+
+.otpContainer {
+  /* border: 2px solid black; */
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  .otpCellContainer {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .otpInput {
+      border: none;
+      outline: none;
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background-color: #f9f3f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 600;
+      color: #33393d;
+      text-align: center;
+    }
+    .otpError{
+      background: #FBE5E6;
+      color: #DE1C22;
+    }
+    .otpInput:focus {
+      border: 2px solid #f16524;
+    }
+  }
+}

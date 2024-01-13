@@ -1,0 +1,147 @@
+.table {
+  .chipContainer {
+    /* border: 2px solid black; */
+    width: fit-content;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-weight: 500;
+    position: relative;
+    .optionContainer {
+      position: absolute;
+      z-index: 100;
+      /* border: 2px solid black; */
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .option:hover {
+      filter: brightness(1.05);
+    }
+  }
+  border: 1px solid #e0e5eb;
+  border-radius: 12px;
+  background: #fff;
+  padding: 16px 0px;
+  .tableOverHead {
+    color: #33393d;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 12px 0px 16px 32px;
+  }
+  .inputs {
+    display: flex;
+    padding-top: 5px;
+    padding-left: 20px;
+    padding-bottom: 20px;
+  }
+  .fields {
+    font-size: 14px;
+  }
+  .selectTag {
+    outline: none;
+    border-radius: 6px;
+    font-size: large;
+    padding: 2px;
+    border: 1px solid #e0e5eb;
+  }
+  .table-head {
+    padding: 6px 8px;
+    background-color: "#F7F7F9" !important;
+    border-top: 1px solid #e0e5eb;
+    border-bottom: 1px solid #e0e5eb;
+    color: #8f9ba4;
+    font-weight: 600;
+  }
+  .table-data {
+    padding: 6px 8px;
+    color: #33393d;
+    border-bottom: 1px solid #e0e5eb;
+    font-weight: 600;
+  }
+  .even-row {
+    background-color: #f7f7f9; /* Gray color for even rows */
+  }
+
+  .odd-row {
+    background-color: #ffffff; /* White color for odd rows */
+  }
+  .pagination {
+    padding-top: 12px;
+    padding-left: 12px;
+    .numbers {
+      display: flex;
+      .prev {
+        border-radius: 6px 0px 0px 6px;
+        border: 1px solid #e0e5eb;
+        background: #fff;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0px 6px;
+      }
+      .next {
+        border-radius: 0px 6px 6px 0px;
+        border-top: 1px solid #e0e5eb;
+        border-right: 1px solid #e0e5eb;
+        border-bottom: 1px solid #e0e5eb;
+        background: #fff;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0px 6px;
+      }
+      .number {
+        width: 30px;
+        height: 30px;
+        .numberBtn {
+          height: 100%;
+          width: 100%;
+          border: none;
+          outline: none;
+          border-top: 1px solid var(--Outline, #e0e5eb);
+          border-right: 1px solid var(--Outline, #e0e5eb);
+          border-bottom: 1px solid var(--Outline, #e0e5eb);
+          background: #fff;
+        }
+      }
+    }
+  }
+}
+
+.showProjects {
+  z-index: 1001;
+  border-radius: 10px;
+  border: 1px solid #e0e5eb;
+  padding: 1rem;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  /* gap: 5px; */
+  /* margin-bottom: 1rem; */
+  height: 36px;
+}
+.fields {
+  border-radius: 6px;
+  padding-left: 14px;
+  size: 14px;
+  border: none;
+}
+.fields {
+  height: 36px;
+  width: 240px;
+  size: 14px;
+  outline: none;
+  border-radius: 6px;
+  border: 1px solid #e0e5eb;
+}
+.ActualTableDiv {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  height: 29rem;
+  width: 90vw;
+  /* padding-left: 1.5%; */
+}
+.ActualTableDiv:hover {
+  overflow: auto;
+}

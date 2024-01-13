@@ -1,0 +1,122 @@
+.homeContainer {
+  /* border: 2px solid black; */
+  background: #f1f4f9;
+  .topBar {
+    /* border: 2px solid black; */
+    background: #fff;
+    width: 100vw;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0px 28px 0px 16px;
+    .logo {
+      height: 30px;
+      width: 30px;
+      img {
+        height: 100%;
+        width: auto;
+      }
+    }
+    .sectionType {
+      margin-left: 36px;
+      color: var(--Black, #33393d);
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      .switches {
+        background-color: white;
+        border-radius: 100px;
+        box-shadow: 0px 2px 2px 1px rgba(1, 1, 1, 0.1);
+        z-index: 1002;
+      }
+      .switch-btn {
+        background-color: #ffffff;
+        border: none;
+        outline: none;
+        border-radius: 100px;
+        padding: 8px;
+        color: #58636e;
+        font-weight: 600;
+        font-size: 14px;
+        width: 60px;
+        cursor: pointer;
+      }
+      .active-switch {
+        background-color: #f16524;
+        color: white;
+      }
+    }
+    .rightCont {
+      /* border: 2px solid black; */
+      margin-left: auto;
+      .login {
+        padding: 8px;
+        border-radius: 10px;
+        background: #f16524;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+      }
+    }
+  }
+  .bottomSection {
+    display: flex;
+    .leftBar {
+      /* border: 2px solid black; */
+      background: #fff;
+      height: calc(100vh - 64px);
+      width: 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 8px;
+      .sectionIcon {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* border: 2px solid black; */
+        width: 100%;
+        padding: 4px;
+        .sectionIconImage {
+          width: 20px !important;
+          height: auto;
+        }
+        .sectionName {
+          color: #575963;
+          font-size: 12px;
+          font-weight: 400;
+        }
+      }
+      .activeSection {
+        background-color: #fef4ef;
+      }
+      .sectionIcon:hover {
+        background-color: #eeeeee;
+        border-radius: 6px;
+      }
+    }
+    .mainContainer {
+      width: 100%;
+    }
+  }
+}
+.project_container {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.matrices {
+  display: flex;
+  padding: 30px;
+  margin-right: auto;
+  flex-direction: row;
+  max-width: 800px;
+  width: 100%;
+  gap: 20px;
+}

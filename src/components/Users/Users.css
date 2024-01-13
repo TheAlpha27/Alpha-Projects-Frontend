@@ -1,0 +1,41 @@
+.users {
+  /* border: 2px solid black; */
+  height: 100%;
+  width: 100%;
+  background: #f1f4f9;
+  .notificationPop {
+    /* border: 2px solid black; */
+    position: absolute;
+    width: 425px;
+    z-index: 999999;
+    top: 16px;
+    right: 48px;
+  }
+  .tableContainer {
+    /* border: 2px solid red; */
+    padding: 20px;
+  }
+
+  .uppeContainers{
+    padding-bottom: 20px;
+    padding-left: 0%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .smallContainers{
+    background-color: white;
+    height: 88px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 240px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-left: 20px;
+  }
+
+  
+}

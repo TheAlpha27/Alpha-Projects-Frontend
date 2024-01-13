@@ -1,0 +1,55 @@
+.map-container {
+  /* padding-top: 3vw; */
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  /* border: 2px solid black; */
+  .leftCont {
+    position: absolute;
+    z-index: 1001;
+    left: 2%;
+    top: calc(64px);
+    .showProjects {
+      background-color: white;
+      z-index: 1001;
+      border-radius: 10px;
+      padding: 1rem;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+      width: fit-content;
+      .info {
+        height: 20px;
+        width: 20px;
+      }
+      .close {
+        border: none;
+        outline: none;
+        background-color: white;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+/* height of the container */
+.leaflet-container {
+  height: calc(100vh - 64px);
+  width: calc(100vw - 64px);
+}
+
+.custom-marker-cluster {
+  background-color: #333;
+  height: 2em;
+  width: 2em;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  box-shadow: 0 0 0px 5px #628927;
+}

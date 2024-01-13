@@ -1,0 +1,13 @@
+
+.smallContainers{
+  background-color: white;
+  height: 88px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 240px;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-left: 20px;
+}
