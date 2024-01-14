@@ -24,7 +24,7 @@ const createClusterCustomIcon = function (cluster) {
 const MapContainerComponent = ({ data }) => {
   const [showProjectCount, setShowProjectCount] = useState(true);
   const [viewport, setViewport] = useState({
-    center: ["24.6399612", "-81.57378955755314"], // initial center
+    center: ["24.6399612", "81.57378955755314"], // initial center
     zoom: 8, // initial zoom
   });
   const [type, setType] = useState(1); //1: Regular, 2: Satellite
