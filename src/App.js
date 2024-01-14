@@ -7,7 +7,8 @@ import Login from "./components/Login/Login";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const baseURL = "http://localhost:4000";
+// const baseURL = "http://localhost:4000";
+const baseURL = "https://alpha-projects-backend.onrender.com";
 
 export default function App() {
   const [userDetails, setUserDetails] = useState({});
