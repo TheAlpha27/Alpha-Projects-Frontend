@@ -59,7 +59,8 @@ const Project = (fullData) => {
   const [requiredData, setRequiredData] = useState([]);
   useEffect(() => {
     setRequiredData(createUserTableData(fullData.fullData));
-  }, []);
+  }, [fullData]);
+  
   return (
     <Table
       type={"project"}

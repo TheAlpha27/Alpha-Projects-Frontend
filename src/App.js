@@ -25,7 +25,8 @@ export default function App() {
           logOut();
         } else {
           parsedUserData.userType = updatedData.data.results[0].type;
-          console.log(parsedUserData);
+          parsedUserData.token = updatedData.data.token;
+          // console.log(parsedUserData);
           localStorage.setItem("userDetails", JSON.stringify(parsedUserData));
           setUserDetails(parsedUserData);
         }

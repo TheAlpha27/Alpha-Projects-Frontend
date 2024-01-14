@@ -40,7 +40,11 @@ const Users = ({ userDetails, baseURL }) => {
   };
 
   const onUserTypeChange = async (payload) => {
-    const data = await axios.put(baseURL + "/change-user-type", payload);
+    const data = await axios.put(baseURL + "/change-user-type", payload, {
+      headers: {
+        Authorization: userDetails.token,
+      },
+    });
     if (data.status === 200) {
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
@@ -59,7 +63,11 @@ const Users = ({ userDetails, baseURL }) => {
 
   const onUserStatusChange = async (payload) => {
     try {
-      const data = await axios.put(baseURL + "/change-user-status", payload);
+      const data = await axios.put(baseURL + "/change-user-status", payload, {
+        headers: {
+          Authorization: userDetails.token,
+        },
+      });
       if (data.status === 200) {
         setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
           show: true,
@@ -107,7 +115,11 @@ const Users = ({ userDetails, baseURL }) => {
   };
 
   const fetchData = async () => {
-    const data = await axios.get(baseURL + "/get-users");
+    const data = await axios.get(baseURL + "/get-users", {
+      headers: {
+        Authorization: userDetails.token,
+      },
+    });
     if (data.status === 200) {
       setUsersData(createUserTableData(data.data));
     }
