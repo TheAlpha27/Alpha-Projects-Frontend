@@ -16,6 +16,10 @@ import { useNavigate } from "react-router-dom";
 import Users from "../Users/Users";
 import Metric from "../metrics/Metric";
 import Project from "../Projects/Project";
+import add from "../../icons/add.svg";
+import Input from "../Input/Input";
+import { generateRandomKey, setPopUpObjFunc } from "../../helper";
+import NotificationPop from "../NotificationPop/NotificationPop";
 
 const ViewMapSwitch = ({ projectsView, loading, setProjectsView }) => {
   return (
@@ -43,6 +47,33 @@ export default function Home({ userDetails, logOut, baseURL }) {
   const [alphaData, setAlphaData] = useState([]);
   const [section, setSection] = useState(1); //1: Projects, 2: Users
   const [projectsView, setProjectsView] = useState(1); //1: Map, 2: Table
+  const [showAdd, setshowAdd] = useState(false);
+  const [newProject, setNewProject] = useState({
+    project_name: "",
+    project_category: "",
+    project_manager: "",
+    client: "",
+    city: "",
+    country: "",
+    contract_amount: "",
+  });
+  const [errors, setErrors] = useState({
+    project_name: false,
+    project_category: false,
+    project_manager: false,
+    client: false,
+    city: false,
+    country: false,
+    contract_amount: false,
+  });
+  const [popUpObjArr, setPopUpObjArr] = useState([
+    {
+      show: false,
+      msg: "",
+      type: "",
+      key: generateRandomKey(),
+    },
+  ]);
 
   const fetchData = async () => {
     const data = await axios.get(baseURL + "/getProjects");
@@ -57,8 +88,188 @@ export default function Home({ userDetails, logOut, baseURL }) {
     fetchData();
   }, []);
   const navigate = useNavigate();
+
+  const handleSave = async () => {
+    console.log(newProject);
+    let hasErrors = false;
+    let temp = { ...errors };
+    for (const key in newProject) {
+      console.log(key);
+      if (
+        newProject[key] == "" ||
+        newProject[key] == null ||
+        newProject[key] < 0
+      ) {
+        temp[key] = true;
+        hasErrors = true;
+      }
+    }
+    setErrors(temp);
+    if (!hasErrors) {
+      const res = await axios.post(baseURL + "/addProject", newProject);
+      if (!res.data?.error) {
+        setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+          show: true,
+          msg: res.data.message,
+          type: "Success",
+        });
+        fetchData();
+        handleClose();
+      } else {
+        if (res.data.message == "Invalid city or country") {
+          setErrors({ ...errors, city: true, country: true });
+        }
+        setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+          show: true,
+          msg: res.data.message,
+          type: "Error",
+        });
+      }
+    }
+  };
+
+  const handleClose = () => {
+    setNewProject({
+      project_name: "",
+      project_category: "",
+      project_manager: "",
+      client: "",
+      city: "",
+      country: "",
+      contract_amount: "",
+    });
+    setErrors({
+      project_name: false,
+      project_category: false,
+      project_manager: false,
+      client: false,
+      city: false,
+      country: false,
+      contract_amount: false,
+    });
+    setshowAdd(false);
+  };
+
   return (
     <div className="homeContainer">
+      <div className="notificationPop">
+        {popUpObjArr.map((popUpobj) => {
+          if (popUpobj.show)
+            return (
+              popUpobj.show && (
+                <NotificationPop
+                  key={popUpobj.key}
+                  message={popUpobj.msg}
+                  type={popUpobj.type}
+                />
+              )
+            );
+          else return <></>;
+        })}
+      </div>
+      {(userDetails.userType == "Admin" || userDetails.userType == "User") &&
+        showAdd && (
+          <div className="addProjectModal">
+            <div className="modalCont">
+              <div>Add New Project</div>
+              <Input
+                type={"text"}
+                placeholder={"Project Name"}
+                onChange={(e) => {
+                  setNewProject({
+                    ...newProject,
+                    project_name: e.target.value,
+                  });
+                }}
+                value={newProject.project_name}
+                error={errors.project_name}
+              />
+              <Input
+                type={"text"}
+                placeholder={"Project Category"}
+                onChange={(e) => {
+                  setNewProject({
+                    ...newProject,
+                    project_category: e.target.value,
+                  });
+                }}
+                value={newProject.project_category}
+                error={errors.project_category}
+              />
+              <Input
+                type={"text"}
+                placeholder={"Project Manager"}
+                onChange={(e) => {
+                  setNewProject({
+                    ...newProject,
+                    project_manager: e.target.value,
+                  });
+                }}
+                value={newProject.project_manager}
+                error={errors.project_manager}
+              />
+              <Input
+                type={"text"}
+                placeholder={"Client"}
+                onChange={(e) => {
+                  setNewProject({ ...newProject, client: e.target.value });
+                }}
+                value={newProject.client}
+                error={errors.client}
+              />
+              <Input
+                type={"text"}
+                placeholder={"City"}
+                onChange={(e) => {
+                  setNewProject({ ...newProject, city: e.target.value });
+                }}
+                value={newProject.city}
+                error={errors.city}
+              />
+              <Input
+                type={"text"}
+                placeholder={"Country"}
+                onChange={(e) => {
+                  setNewProject({ ...newProject, country: e.target.value });
+                }}
+                value={newProject.country}
+                error={errors.country}
+              />
+              <Input
+                type={"number"}
+                placeholder={"Contract Amount"}
+                onChange={(e) => {
+                  if (e.target.value >= 0)
+                    setNewProject({
+                      ...newProject,
+                      contract_amount: e.target.value,
+                    });
+                }}
+                value={newProject.contract_amount}
+                error={errors.contract_amount}
+              />
+              <div className="btns">
+                {" "}
+                <div
+                  className="save"
+                  onClick={() => {
+                    handleSave();
+                  }}
+                >
+                  Save
+                </div>
+                <div
+                  className="close"
+                  onClick={() => {
+                    handleClose();
+                  }}
+                >
+                  Close
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       <div className="topBar">
         <div className="logo">
           <img src={logoSm} alt="" />
@@ -72,7 +283,7 @@ export default function Home({ userDetails, logOut, baseURL }) {
                   position: "absolute",
                   right: "2%",
                   top: "11%",
-                  zIndex: 222222,
+                  zIndex: 1003,
                 }}
               >
                 <ViewMapSwitch
@@ -153,6 +364,13 @@ export default function Home({ userDetails, logOut, baseURL }) {
                       metrice={fullData?.length}
                       logo={file1}
                     />
+                    {(userDetails.userType == "Admin" ||
+                      userDetails.userType == "User") && (
+                      <div className="addNew" onClick={() => setshowAdd(true)}>
+                        {" "}
+                        Add Project <img src={add} alt="" />
+                      </div>
+                    )}
                   </div>
                   <div>
                     <Project fullData={fullData} />

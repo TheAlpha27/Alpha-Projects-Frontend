@@ -1,4 +1,47 @@
 .homeContainer {
+  .notificationPop {
+    position: absolute;
+    width: 425px;
+    z-index: 999999;
+    top: 16px;
+    right: 48px;
+  }
+  .addProjectModal {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(1, 1, 1, 0.5);
+    z-index: 1007;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .modalCont {
+      width: 500px;
+      background-color: #fff;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 24px;
+      .btns {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        .save,
+        .close {
+          padding: 8px 16px;
+          border: 1px solid rgb(119, 119, 119);
+          border-radius: 12px;
+          cursor: pointer;
+        }
+        .save {
+          border: none;
+          color: white;
+          background-color: #f16524;
+        }
+      }
+    }
+  }
   /* border: 2px solid black; */
   background: #f1f4f9;
   .topBar {
@@ -113,10 +156,27 @@
 }
 .matrices {
   display: flex;
+  align-items: center;
   padding: 30px;
   margin-right: auto;
   flex-direction: row;
   max-width: 800px;
   width: 100%;
   gap: 20px;
+  .addNew {
+    border-radius: 12px;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    font-size: 18px;
+    font-weight: 600;
+    background-color: #f16524;
+    color: white;
+    cursor: pointer;
+    img {
+      height: 40px;
+      width: auto;
+    }
+  }
 }

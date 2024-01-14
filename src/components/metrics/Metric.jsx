@@ -1,6 +1,4 @@
 import React from 'react'
-import logoSm from "../../icons/logoSm.svg";
-import settings from '../../icons/assets/settings.svg'
 import "./Metric.css";
 
 const Metric = ({text,metrice,logo}) => {

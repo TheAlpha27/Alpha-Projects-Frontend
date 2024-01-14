@@ -284,7 +284,6 @@ const Table = ({
             <thead>
               <tr style={{ position: "relative", backgroundColor: "white" }}>
                 {columns.map((column, index) => {
-                  console.log(column);
                   return (
                     <th
                       style={{
