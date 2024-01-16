@@ -45,7 +45,7 @@ const Users = ({ userDetails, baseURL }) => {
         Authorization: userDetails.token,
       },
     });
-    if (data.status === 200) {
+    if (!data.data?.error) {
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
         msg: data.data.message,
@@ -68,7 +68,7 @@ const Users = ({ userDetails, baseURL }) => {
           Authorization: userDetails.token,
         },
       });
-      if (data.status === 200) {
+      if (!data.data?.error) {
         setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
           show: true,
           msg: data.data.message,

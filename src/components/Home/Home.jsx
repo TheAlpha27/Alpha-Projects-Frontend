@@ -87,7 +87,7 @@ export default function Home({ userDetails, logOut, baseURL }) {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const navigate = useNavigate();
 
   const handleSave = async () => {
@@ -109,8 +109,8 @@ export default function Home({ userDetails, logOut, baseURL }) {
     if (!hasErrors) {
       const res = await axios.post(baseURL + "/addProject", newProject, {
         headers: {
-          'Authorization' : userDetails.token
-        }
+          Authorization: userDetails.token,
+        },
       });
       if (!res.data?.error) {
         setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
