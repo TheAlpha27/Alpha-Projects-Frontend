@@ -3,23 +3,29 @@
 import "./Home.css";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
-import MapContainerComponent from "../MapContainer/MapContainerComponent";
-import Header from "../Header/Header";
+import MapContainerComponent from "../../components/MapContainer/MapContainerComponent";
+import Header from "../../components/Header/Header";
 import axios from "axios";
 import logoSm from "../../icons/logoSm.svg";
 import file from "../../icons/assets/file.svg";
 import file1 from "../../icons/assets/file1.svg";
 import projects from "../../icons/projects.svg";
 import users from "../../icons/user.svg";
-import UserDropCard from "../UserDropCard/UserDropCard";
+import UserDropCard from "../../components/UserDropCard/UserDropCard";
 import { useNavigate } from "react-router-dom";
-import Users from "../Users/Users";
-import Metric from "../metrics/Metric";
+import Users from "../../components/Users/Users";
+import Metric from "../../components/metrics/Metric";
 import Project from "../Projects/Project";
 import add from "../../icons/add.svg";
-import Input from "../Input/Input";
+import Input from "../../components/Input/Input";
 import { generateRandomKey, setPopUpObjFunc } from "../../helper";
-import NotificationPop from "../NotificationPop/NotificationPop";
+import NotificationPop from "../../components/NotificationPop/NotificationPop";
+import {
+  InitialProject,
+  InitialProjectErrors,
+  ProjectView,
+  Sections,
+} from "../../utils/constants";
 
 const ViewMapSwitch = ({ projectsView, loading, setProjectsView }) => {
   return (
@@ -42,30 +48,14 @@ const ViewMapSwitch = ({ projectsView, loading, setProjectsView }) => {
   );
 };
 
-export default function Home({ userDetails, logOut, baseURL }) {
+const Home = ({ userDetails, logOut, baseURL }) => {
   const [fullData, setFullData] = useState([]);
   const [alphaData, setAlphaData] = useState([]);
-  const [section, setSection] = useState(1); //1: Projects, 2: Users
-  const [projectsView, setProjectsView] = useState(1); //1: Map, 2: Table
+  const [section, setSection] = useState(Sections.projects);
+  const [projectsView, setProjectsView] = useState(ProjectView.map);
   const [showAdd, setshowAdd] = useState(false);
-  const [newProject, setNewProject] = useState({
-    project_name: "",
-    project_category: "",
-    project_manager: "",
-    client: "",
-    city: "",
-    country: "",
-    contract_amount: "",
-  });
-  const [errors, setErrors] = useState({
-    project_name: false,
-    project_category: false,
-    project_manager: false,
-    client: false,
-    city: false,
-    country: false,
-    contract_amount: false,
-  });
+  const [newProject, setNewProject] = useState({ ...InitialProject });
+  const [errors, setErrors] = useState({ ...InitialProjectErrors });
   const [popUpObjArr, setPopUpObjArr] = useState([
     {
       show: false,
@@ -134,24 +124,8 @@ export default function Home({ userDetails, logOut, baseURL }) {
   };
 
   const handleClose = () => {
-    setNewProject({
-      project_name: "",
-      project_category: "",
-      project_manager: "",
-      client: "",
-      city: "",
-      country: "",
-      contract_amount: "",
-    });
-    setErrors({
-      project_name: false,
-      project_category: false,
-      project_manager: false,
-      client: false,
-      city: false,
-      country: false,
-      contract_amount: false,
-    });
+    setNewProject({ ...InitialProject });
+    setErrors({ ...InitialProjectErrors });
     setshowAdd(false);
   };
 
@@ -391,4 +365,6 @@ export default function Home({ userDetails, logOut, baseURL }) {
       </div>
     </div>
   );
-}
+};
+
+export default Home;

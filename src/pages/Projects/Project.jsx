@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Table from "../Table/Table";
+import Table from "../../components/Table/Table";
 import "./Project.css";
 import moment from "moment";
 
@@ -60,7 +60,7 @@ const Project = (fullData) => {
   useEffect(() => {
     setRequiredData(createUserTableData(fullData.fullData));
   }, [fullData]);
-  
+
   return (
     <Table
       type={"project"}
