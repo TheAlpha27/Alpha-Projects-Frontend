@@ -1,21 +1,46 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useRef, useState } from "react";
 import "./Table.css";
 import Search from "../../icons/assets/search.svg";
 import Dropdown from "../Dropdown/Dropdown";
+import { ProjectStatus, UserStatus, UserTypes } from "../../utils/constants";
 
 const userTypeOptions = [
-  { value: "Guest", bgColor: "#DFEBFD", textColor: "#4C6FA5" },
-  { value: "User", bgColor: "#F0E3FD", textColor: "#784CA5" },
-  { value: "Admin", bgColor: "#FEF2EF", textColor: "#E07529" },
+  { value: UserTypes.guest, bgColor: "#DFEBFD", textColor: "#4C6FA5" },
+  { value: UserTypes.user, bgColor: "#F0E3FD", textColor: "#784CA5" },
+  { value: UserTypes.admin, bgColor: "#FEF2EF", textColor: "#E07529" },
 ];
 
 const userStatusOptions = [
-  { value: "Active", bgColor: "#EFFEFA", textColor: "#13A579" },
-  { value: "Inactive", bgColor: "#FFF1F1", textColor: "#D93838" },
+  { value: UserStatus.active, bgColor: "#EFFEFA", textColor: "#13A579" },
+  { value: UserStatus.inactive, bgColor: "#FFF1F1", textColor: "#D93838" },
+];
+
+const projectStatusOptions = [
+  { value: ProjectStatus.notStarted, bgColor: "#DFEBFD", textColor: "#4C6FA5" },
+  { value: ProjectStatus.inProgress, bgColor: "#F0E3FD", textColor: "#784CA5" },
+  { value: ProjectStatus.completed, bgColor: "#FEF2EF", textColor: "#E07529" },
 ];
 
 const Chip = ({ value, options, onChange, email, updateType }) => {
   const [showOptions, setShowOptions] = useState(false);
+
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowOptions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
+
   const getBgColor = () => {
     const bgColor = options.filter((e) => e.value === value)[0].bgColor;
     return bgColor;
@@ -29,6 +54,7 @@ const Chip = ({ value, options, onChange, email, updateType }) => {
       className="chipContainer pointer"
       onClick={() => setShowOptions(!showOptions)}
       style={{ backgroundColor: `${getBgColor()}`, color: `${getTextColor()}` }}
+      ref={menuRef}
     >
       <div>{value}</div>
       {showOptions && (

@@ -636,11 +636,10 @@ const Login = () => {
     try {
       setLoading(true);
       const data = await axios.post(baseURL + "/login", loginInput);
-      console.log({ data });
       setLoading(false);
       setError(false);
-      setUserDetails(data.data);
-      localStorage.setItem("userDetails", JSON.stringify(data.data));
+      setUserDetails(data.data.user);
+      localStorage.setItem("userDetails", JSON.stringify(data.data.user));
       navigate("/");
     } catch (error) {
       if (error.response.status === 401) {

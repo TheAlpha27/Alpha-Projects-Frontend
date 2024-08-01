@@ -1,13 +1,13 @@
 .input {
-  border: 1px solid #e0e5eb;
+  border: 1px solid #e0e5eb !important;
   border-radius: 12px;
   height: 56px;
-  width: 100%;
+  width: 100% !important;
   color: #33393d;
   font-size: 16px;
   padding-left: 20px;
   box-shadow: none;
-  cursor: text;
+  cursor: text !important;
 }
 
 .error {
@@ -23,8 +23,8 @@
   cursor: pointer;
 }
 
-.input:focus + .label,
-.input:valid + .label {
+.input:focus+.label,
+.input:valid+.label {
   font-size: 12px;
   color: #afbdcf;
   top: -5px;
@@ -61,12 +61,14 @@
   display: flex;
   gap: 16px;
   justify-content: center;
+
   .otpCellContainer {
     width: 56px;
     height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
+
     .otpInput {
       border: none;
       outline: none;
@@ -82,10 +84,12 @@
       color: #33393d;
       text-align: center;
     }
-    .otpError{
+
+    .otpError {
       background: #FBE5E6;
       color: #DE1C22;
     }
+
     .otpInput:focus {
       border: 2px solid #f16524;
     }

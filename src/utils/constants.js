@@ -12,6 +12,12 @@ export const UserStatus = {
   inactive: "Inactive",
 };
 
+export const ProjectStatus = {
+  notStarted: "Not Started",
+  inProgress: "In Progress",
+  completed: "Completed",
+};
+
 export const Sections = {
   projects: 1,
   users: 2,
