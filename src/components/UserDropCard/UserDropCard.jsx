@@ -12,7 +12,7 @@ const UserDropCard = ({ userDetails, logOut }) => {
       </div>
       <div className="details">
         <div className="name">{userDetails?.fullname}</div>
-        <div className="userType">{userDetails?.userType}</div>
+        <div className="userType">{userDetails?.type}</div>
       </div>
       <div
         onClick={() => {

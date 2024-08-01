@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Table from "../../components/Table/Table";
-import "./Project.css";
+import "./ProjectTable.css";
 import moment from "moment";
 
-const Project = (fullData) => {
+const ProjectTable = (fullData) => {
   const userColumns = [
     {
       columnName: "Project Name",
@@ -72,4 +72,4 @@ const Project = (fullData) => {
   );
 };
 
-export default Project;
+export default ProjectTable;

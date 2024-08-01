@@ -1,15 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import "./Users.css";
 import { useState } from "react";
 import axios from "axios";
-import Table from "../Table/Table";
-import { generateRandomKey, setPopUpObjFunc } from "../../helper";
 import group from "../../icons/assets/group.svg";
 import settings from "../../icons/assets/settings.svg";
 import verified from "../../icons/assets/verified.svg";
 import user from "../../icons/assets/user.svg";
-import Metric from "../metrics/Metric";
-import NotificationPop from "../NotificationPop/NotificationPop";
+import Table from "../../components/Table/Table";
+import { generateRandomKey, setPopUpObjFunc } from "../../utils/helper";
+import Metric from "../../components/metrics/Metric";
+import NotificationPop from "../../components/NotificationPop/NotificationPop";
+import { AuthContext } from "../../utils/authContext";
+import { baseURL } from "../../utils/constants";
 
 const userColumns = [
   { columnName: "Full Name", key: "Full_Name", width: "30%" },
@@ -18,9 +20,9 @@ const userColumns = [
   { columnName: "Status", key: "Status", width: "20%" },
 ];
 
-const Users = ({ userDetails, baseURL }) => {
+const Users = () => {
+  const { userDetails, logOut } = useContext(AuthContext);
   const [usersData, setUsersData] = useState([]);
-
   const [popUpObjArr, setPopUpObjArr] = useState([
     {
       show: false,
@@ -40,22 +42,25 @@ const Users = ({ userDetails, baseURL }) => {
   };
 
   const onUserTypeChange = async (payload) => {
-    const data = await axios.put(baseURL + "/change-user-type", payload, {
-      headers: {
-        Authorization: userDetails.token,
-      },
-    });
-    if (!data.data?.error) {
+    try {
+      const data = await axios.put(baseURL + "/change-user-type", payload, {
+        headers: {
+          Authorization: userDetails.token,
+        },
+      });
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
         msg: data.data.message,
         type: "Success",
       });
       fetchData();
-    } else {
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
-        msg: data.data.message,
+        msg: error.response.data.message,
         type: "Error",
       });
     }
@@ -68,22 +73,21 @@ const Users = ({ userDetails, baseURL }) => {
           Authorization: userDetails.token,
         },
       });
-      if (!data.data?.error) {
-        setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
-          show: true,
-          msg: data.data.message,
-          type: "Success",
-        });
-        fetchData();
-      } else {
-        setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
-          show: true,
-          msg: data.data.message,
-          type: "Error",
-        });
-      }
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: data.data.message,
+        type: "Success",
+      });
+      fetchData();
     } catch (error) {
-      console.error("Error updating user status:", error);
+      if (error.response.status === 401) {
+        logOut();
+      }
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: error.response.data.message,
+        type: "Error",
+      });
     }
   };
 
@@ -115,19 +119,29 @@ const Users = ({ userDetails, baseURL }) => {
   };
 
   const fetchData = async () => {
-    const data = await axios.get(baseURL + "/get-users", {
-      headers: {
-        Authorization: userDetails.token,
-      },
-    });
-    if (data.status === 200) {
+    try {
+      const data = await axios.get(baseURL + "/get-users", {
+        headers: {
+          Authorization: userDetails.token,
+        },
+      });
       setUsersData(createUserTableData(data.data));
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: error.response.data.message,
+        type: "Error",
+      });
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
   return (
     <div className="users">
       <div className="notificationPop">

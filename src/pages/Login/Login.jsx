@@ -1,16 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Login.css";
 import logoSm from "../../icons/logoSm.svg";
 import vector from "../../icons/vector.svg";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import axios from "axios";
-import { generateRandomKey, setPopUpObjFunc } from "../../helper";
 import NotificationPop from "../../components/NotificationPop/NotificationPop";
 import { useNavigate } from "react-router-dom";
 import edit from "../../icons/edit.svg";
 import success from "../../icons/success.svg";
+import { generateRandomKey, setPopUpObjFunc } from "../../utils/helper";
+import { AuthContext } from "../../utils/authContext";
+import {
+  baseURL,
+  ForgetPasswordStage,
+  InitialForgetPassInput,
+  InitialLoginInput,
+  InitialSignUpInput,
+  LoginStage,
+  SignUpStage,
+} from "../../utils/constants";
 
 const LoginInputs = ({
   loginInput,
@@ -142,10 +152,10 @@ const SignupInputs = ({
   const [allowResend, setAllowResend] = useState(false);
   const [cnfPassErr, setCnfPassErr] = useState(false);
   useEffect(() => {
-    if (stage === 4) {
+    if (stage === SignUpStage.Done) {
       const tempObj = { ...stages };
       tempObj.signUp.show = false;
-      tempObj.signUp.stage = 1;
+      tempObj.signUp.stage = SignUpStage.Email;
       tempObj.login.show = true;
       setTimeout(() => {
         setStages(tempObj);
@@ -155,7 +165,7 @@ const SignupInputs = ({
   return (
     <>
       <div className="LoginTop">
-        {stage === 1 && (
+        {stage === SignUpStage.Email && (
           <>
             <div className="welcome">Create account</div>
             <div className="creds">
@@ -195,7 +205,7 @@ const SignupInputs = ({
             </div>
           </>
         )}
-        {stage === 2 && (
+        {stage === SignUpStage.OTP && (
           <>
             <div className="welcome">OTP Verification</div>
             <div className="creds">
@@ -203,7 +213,7 @@ const SignupInputs = ({
               <img
                 onClick={() => {
                   const tempObj = { ...stages };
-                  tempObj.signUp.stage = 1;
+                  tempObj.signUp.stage = SignUpStage.Email;
                   setStages(tempObj);
                 }}
                 src={edit}
@@ -254,7 +264,7 @@ const SignupInputs = ({
                 onClick={() => {
                   const tempObj = { ...stages };
                   tempObj.signUp.show = false;
-                  tempObj.signUp.stage = 1;
+                  tempObj.signUp.stage = SignUpStage.Email;
                   tempObj.login.show = true;
                   setStages(tempObj);
                 }}
@@ -265,7 +275,7 @@ const SignupInputs = ({
             </div>
           </>
         )}
-        {stage === 3 && (
+        {stage === SignUpStage.CreatePassword && (
           <>
             <div className="welcome">Create account</div>
             <div className="creds">
@@ -346,7 +356,7 @@ const SignupInputs = ({
                 onClick={() => {
                   const tempObj = { ...stages };
                   tempObj.signUp.show = false;
-                  tempObj.signUp.stage = 1;
+                  tempObj.signUp.stage = SignUpStage.Email;
                   tempObj.login.show = true;
                   setStages(tempObj);
                 }}
@@ -357,7 +367,7 @@ const SignupInputs = ({
             </div>
           </>
         )}
-        {stage === 4 && (
+        {stage === SignUpStage.Done && (
           <div className="doneMain">
             <img src={success} alt="" />
             <div style={{ fontSize: "42px" }} className="welcome">
@@ -389,10 +399,10 @@ const ForgotPassword = ({
   const [allowResend, setAllowResend] = useState(false);
   const [cnfPassErr, setCnfPassErr] = useState(false);
   useEffect(() => {
-    if (stage === 4) {
+    if (stage === ForgetPasswordStage.Done) {
       const tempObj = { ...stages };
       tempObj.forgotPassword.show = false;
-      tempObj.forgotPassword.stage = 1;
+      tempObj.forgotPassword.stage = ForgetPasswordStage.Email;
       tempObj.login.show = true;
       setTimeout(() => {
         setStages(tempObj);
@@ -403,7 +413,7 @@ const ForgotPassword = ({
   return (
     <>
       <div className="LoginTop">
-        {stage === 1 && (
+        {stage === ForgetPasswordStage.Email && (
           <>
             {" "}
             <div className="welcome">Forgot Password</div>
@@ -443,7 +453,7 @@ const ForgotPassword = ({
             />
           </>
         )}
-        {stage === 2 && (
+        {stage === ForgetPasswordStage.OTP && (
           <>
             {" "}
             <div className="welcome">OTP Verification</div>
@@ -500,7 +510,7 @@ const ForgotPassword = ({
                 onClick={() => {
                   const tempObj = { ...stages };
                   tempObj.forgotPassword.show = false;
-                  tempObj.forgotPassword.stage = 1;
+                  tempObj.forgotPassword.stage = ForgetPasswordStage.Email;
                   tempObj.login.show = true;
                   setStages(tempObj);
                 }}
@@ -511,7 +521,7 @@ const ForgotPassword = ({
             </div>
           </>
         )}
-        {stage === 3 && (
+        {stage === ForgetPasswordStage.SetPassword && (
           <>
             {" "}
             <div className="welcome" style={{ fontSize: "40px" }}>
@@ -567,7 +577,7 @@ const ForgotPassword = ({
             />
           </>
         )}
-        {stage === 4 && (
+        {stage === ForgetPasswordStage.Done && (
           <div className="doneMain">
             <img src={success} alt="" />
             <div style={{ fontSize: "24px" }} className="welcome">
@@ -579,7 +589,7 @@ const ForgotPassword = ({
           </div>
         )}
       </div>
-      {stage !== 4 && (
+      {stage !== ForgetPasswordStage.Done && (
         <div className="LoginBottom">
           By continuing, you agree to our{" "}
           <span className="link">Terms & Conditions</span>
@@ -589,7 +599,7 @@ const ForgotPassword = ({
   );
 };
 
-const Login = ({ userDetails, setUserDetails, baseURL }) => {
+const Login = () => {
   const [popUpObjArr, setPopUpObjArr] = useState([
     {
       show: false,
@@ -601,65 +611,56 @@ const Login = ({ userDetails, setUserDetails, baseURL }) => {
   const [stages, setStages] = useState({
     login: {
       show: true,
-      stage: 1, // 1: login creds
+      stage: LoginStage.LoginCreds,
     },
     signUp: {
       show: false,
-      stage: 1, // 1: enter email, 2: enter otp, 3: create password, 4: done
+      stage: SignUpStage.Email,
     },
     forgotPassword: {
       show: false,
-      stage: 1, // 1: enter email, 2: enter otp, 3: set password, 4: done
+      stage: ForgetPasswordStage.Email,
     },
   });
-  const [loginInput, setLoginInput] = useState({ email: "", password: "" });
-  const [signUpInput, setSignUpInput] = useState({
-    email: "",
-    otp: "",
-    password: "",
-    confirmPass: "",
-    fullname: "",
-  });
+  const [loginInput, setLoginInput] = useState({ ...InitialLoginInput });
+  const [signUpInput, setSignUpInput] = useState({ ...InitialSignUpInput });
   const [forgotPassInput, setForgotPassInput] = useState({
-    email: "",
-    otp: "",
-    password: "",
-    confirmPass: "",
+    ...InitialForgetPassInput,
   });
-
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setUserDetails, logOut } = useContext(AuthContext);
 
   const login = async () => {
-    setLoading(true);
-    const data = await axios.post(baseURL + "/login", loginInput);
-    if (data.status === 200 && !data.data.error) {
+    try {
+      setLoading(true);
+      const data = await axios.post(baseURL + "/login", loginInput);
+      console.log({ data });
       setLoading(false);
       setError(false);
       setUserDetails(data.data);
       localStorage.setItem("userDetails", JSON.stringify(data.data));
-      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
-        show: true,
-        msg: data.data.message,
-        type: "Success",
-      });
       navigate("/");
-    } else if (data.data.error) {
-      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
       setError(true);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
-        msg: data.data.message,
+        msg: error.response.data.message,
         type: "Error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const getOtp = async () => {
-    setLoading(true);
-    const data = await axios.post(baseURL + "/signup", signUpInput);
-    if (data.status === 200 && !data.data.error) {
+    try {
+      setLoading(true);
+      const data = await axios.post(baseURL + "/signup", signUpInput);
       setLoading(false);
       setError(false);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
@@ -668,23 +669,27 @@ const Login = ({ userDetails, setUserDetails, baseURL }) => {
         type: "Success",
       });
       const tempObj = { ...stages };
-      tempObj.signUp.stage = 2;
+      tempObj.signUp.stage = SignUpStage.OTP;
       setStages(tempObj);
-    } else if (data.data.error) {
-      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
       setError(true);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
-        msg: data.data.message,
+        msg: error.response.data.message,
         type: "Error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const verifyOtp = async () => {
-    setLoading(true);
-    const data = await axios.post(baseURL + "/verify-otp", signUpInput);
-    if (data.status === 200 && !data.data.error) {
+    try {
+      setLoading(true);
+      const data = await axios.post(baseURL + "/verify-otp", signUpInput);
       setLoading(false);
       setError(false);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
@@ -693,23 +698,27 @@ const Login = ({ userDetails, setUserDetails, baseURL }) => {
         type: "Success",
       });
       const tempObj = { ...stages };
-      tempObj.signUp.stage = 3;
+      tempObj.signUp.stage = SignUpStage.CreatePassword;
       setStages(tempObj);
-    } else if (data.data.error) {
-      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
       setError(true);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
-        msg: data.data.message,
+        msg: error.response.data.message,
         type: "Error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const signup = async () => {
-    setLoading(true);
-    const data = await axios.post(baseURL + "/createPassword", signUpInput);
-    if (data.status === 200 && !data.data.error) {
+    try {
+      setLoading(true);
+      const data = await axios.post(baseURL + "/createPassword", signUpInput);
       setLoading(false);
       setError(false);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
@@ -718,23 +727,30 @@ const Login = ({ userDetails, setUserDetails, baseURL }) => {
         type: "Success",
       });
       const tempObj = { ...stages };
-      tempObj.signUp.stage = 4;
+      tempObj.signUp.stage = SignUpStage.Done;
       setStages(tempObj);
-    } else if (data.data.error) {
-      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
       setError(true);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
-        msg: data.data.message,
+        msg: error.response.data.message,
         type: "Error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const forgotPass = async () => {
-    setLoading(true);
-    const data = await axios.post(baseURL + "/forgotPassword", forgotPassInput);
-    if (data.status === 200 && !data.data.error) {
+    try {
+      setLoading(true);
+      const data = await axios.post(
+        baseURL + "/forgotPassword",
+        forgotPassInput
+      );
       setLoading(false);
       setError(false);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
@@ -743,23 +759,27 @@ const Login = ({ userDetails, setUserDetails, baseURL }) => {
         type: "Success",
       });
       const tempObj = { ...stages };
-      tempObj.forgotPassword.stage = 2;
+      tempObj.forgotPassword.stage = ForgetPasswordStage.OTP;
       setStages(tempObj);
-    } else if (data.data.error) {
-      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
       setError(true);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
-        msg: data.data.message,
+        msg: error.response.data.message,
         type: "Error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const verifyOtpReset = async () => {
-    setLoading(true);
-    const data = await axios.post(baseURL + "/verify-otp", forgotPassInput);
-    if (data.status === 200 && !data.data.error) {
+    try {
+      setLoading(true);
+      const data = await axios.post(baseURL + "/verify-otp", forgotPassInput);
       setLoading(false);
       setError(false);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
@@ -768,23 +788,30 @@ const Login = ({ userDetails, setUserDetails, baseURL }) => {
         type: "Success",
       });
       const tempObj = { ...stages };
-      tempObj.forgotPassword.stage = 3;
+      tempObj.forgotPassword.stage = ForgetPasswordStage.SetPassword;
       setStages(tempObj);
-    } else if (data.data.error) {
-      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
       setError(true);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
-        msg: data.data.message,
+        msg: error.response.data.message,
         type: "Error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const setPass = async () => {
-    setLoading(true);
-    const data = await axios.post(baseURL + "/resetPassword", forgotPassInput);
-    if (data.status === 200 && !data.data.error) {
+    try {
+      setLoading(true);
+      const data = await axios.post(
+        baseURL + "/resetPassword",
+        forgotPassInput
+      );
       setLoading(false);
       setError(false);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
@@ -793,16 +820,20 @@ const Login = ({ userDetails, setUserDetails, baseURL }) => {
         type: "Success",
       });
       const tempObj = { ...stages };
-      tempObj.forgotPassword.stage = 4;
+      tempObj.forgotPassword.stage = ForgetPasswordStage.Done;
       setStages(tempObj);
-    } else if (data.data.error) {
-      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
       setError(true);
       setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
         show: true,
-        msg: data.data.message,
+        msg: error.response.data.message,
         type: "Error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -825,7 +856,7 @@ const Login = ({ userDetails, setUserDetails, baseURL }) => {
       </div>
       <div className="responsiveContainer">
         <div className="top">
-          <img src={logoSm} alt="logo" className="logo"/>
+          <img src={logoSm} alt="logo" className="logo" />
           <span>Alpha Projects</span>
         </div>
         <div className="bottom">
@@ -833,7 +864,8 @@ const Login = ({ userDetails, setUserDetails, baseURL }) => {
             <div
               className="left"
               style={
-                stages.signUp.stage === 4 || stages.forgotPassword.stage === 4
+                stages.signUp.stage === SignUpStage.Done ||
+                stages.forgotPassword.stage === ForgetPasswordStage.Done
                   ? { backgroundColor: "#00A37D" }
                   : {}
               }
@@ -841,18 +873,20 @@ const Login = ({ userDetails, setUserDetails, baseURL }) => {
               <div className="content">
                 <div className="title">
                   {stages.forgotPassword.show
-                    ? stages.forgotPassword.stage === 3
+                    ? stages.forgotPassword.stage ===
+                      ForgetPasswordStage.SetPassword
                       ? "Set Password"
-                      : stages.forgotPassword.stage === 4
+                      : stages.forgotPassword.stage === ForgetPasswordStage.Done
                       ? "Welcome to Alpha Projects"
                       : "Forgot Password"
                     : "Welcome to Alpha Projects"}
                 </div>
                 <div className="desc">
                   {stages.forgotPassword.show
-                    ? stages.forgotPassword.stage === 3
+                    ? stages.forgotPassword.stage ===
+                      ForgetPasswordStage.SetPassword
                       ? "Set a strong password to protect your account."
-                      : stages.forgotPassword.stage === 4
+                      : stages.forgotPassword.stage === ForgetPasswordStage.Done
                       ? "We offer data display and Decision Support platform to promote and provide information about Alpha projects."
                       : "Reset your Alpha Projects software password to account access. Don’t worry. We’ll help you to fix it."
                     : "We offer data display and Decision Support platform to promote and provide information about Alpha projects. "}
