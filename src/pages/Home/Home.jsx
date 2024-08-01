@@ -2,7 +2,7 @@
 /* eslint-disable eqeqeq */
 import "./Home.css";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import MapContainerComponent from "../../components/MapContainer/MapContainerComponent";
 import Header from "../../components/Header/Header";
 import axios from "axios";
@@ -13,19 +13,22 @@ import projects from "../../icons/projects.svg";
 import users from "../../icons/user.svg";
 import UserDropCard from "../../components/UserDropCard/UserDropCard";
 import { useNavigate } from "react-router-dom";
-import Users from "../../components/Users/Users";
 import Metric from "../../components/metrics/Metric";
-import Project from "../Projects/Project";
 import add from "../../icons/add.svg";
 import Input from "../../components/Input/Input";
-import { generateRandomKey, setPopUpObjFunc } from "../../helper";
 import NotificationPop from "../../components/NotificationPop/NotificationPop";
 import {
+  baseURL,
   InitialProject,
   InitialProjectErrors,
   ProjectView,
   Sections,
+  UserTypes,
 } from "../../utils/constants";
+import Users from "../Users/Users";
+import { generateRandomKey, setPopUpObjFunc } from "../../utils/helper";
+import { AuthContext } from "../../utils/authContext";
+import ProjectTable from "../Projects/ProjectTable";
 
 const ViewMapSwitch = ({ projectsView, loading, setProjectsView }) => {
   return (
@@ -48,7 +51,7 @@ const ViewMapSwitch = ({ projectsView, loading, setProjectsView }) => {
   );
 };
 
-const Home = ({ userDetails, logOut, baseURL }) => {
+const Home = () => {
   const [fullData, setFullData] = useState([]);
   const [alphaData, setAlphaData] = useState([]);
   const [section, setSection] = useState(Sections.projects);
@@ -64,18 +67,35 @@ const Home = ({ userDetails, logOut, baseURL }) => {
       key: generateRandomKey(),
     },
   ]);
+  const { userDetails, logOut } = useContext(AuthContext);
 
   const fetchData = async () => {
-    const data = await axios.get(baseURL + "/getProjects");
-    if (data.data && data.data.length > 0) {
-      // console.log(data.data);
-      setFullData(data.data);
-      setAlphaData(data.data);
+    try {
+      const data = await axios.get(baseURL + "/getProjects", {
+        headers: {
+          Authorization: userDetails.token,
+        },
+      });
+      if (data.data && data.data.length > 0) {
+        setFullData(data.data);
+        setAlphaData(data.data);
+      }
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: error.response.data.message,
+        type: "Error",
+      });
     }
   };
 
   useEffect(() => {
-    fetchData();
+    if (userDetails) {
+      fetchData();
+    }
   }, []);
 
   const navigate = useNavigate();
@@ -97,12 +117,12 @@ const Home = ({ userDetails, logOut, baseURL }) => {
     }
     setErrors(temp);
     if (!hasErrors) {
-      const res = await axios.post(baseURL + "/addProject", newProject, {
-        headers: {
-          Authorization: userDetails.token,
-        },
-      });
-      if (!res.data?.error) {
+      try {
+        const res = await axios.post(baseURL + "/addProject", newProject, {
+          headers: {
+            Authorization: userDetails.token,
+          },
+        });
         setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
           show: true,
           msg: res.data.message,
@@ -110,13 +130,16 @@ const Home = ({ userDetails, logOut, baseURL }) => {
         });
         fetchData();
         handleClose();
-      } else {
-        if (res.data.message == "Invalid city or country") {
+      } catch (error) {
+        if (error.response.status === 401) {
+          logOut();
+        }
+        if (error.response.data.message == "Invalid city or country") {
           setErrors({ ...errors, city: true, country: true });
         }
         setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
           show: true,
-          msg: res.data.message,
+          msg: error.response.data.message,
           type: "Error",
         });
       }
@@ -146,7 +169,8 @@ const Home = ({ userDetails, logOut, baseURL }) => {
           else return <></>;
         })}
       </div>
-      {(userDetails.userType == "Admin" || userDetails.userType == "User") &&
+      {(userDetails?.type == UserTypes.admin ||
+        userDetails?.type == UserTypes.user) &&
         showAdd && (
           <div className="addProjectModal">
             <div className="modalCont">
@@ -276,7 +300,7 @@ const Home = ({ userDetails, logOut, baseURL }) => {
           )}
         </div>
         <div className="rightCont">
-          {userDetails.email ? (
+          {userDetails?.email ? (
             <UserDropCard userDetails={userDetails} logOut={logOut} />
           ) : (
             <div
@@ -303,7 +327,7 @@ const Home = ({ userDetails, logOut, baseURL }) => {
             </div>
             <div className="sectionName">Projects</div>
           </div>
-          {userDetails.userType === "Admin" && (
+          {userDetails?.type !== UserTypes.guest && (
             <div
               onClick={() => setSection(2)}
               className={`sectionIcon pointer ${
@@ -318,9 +342,9 @@ const Home = ({ userDetails, logOut, baseURL }) => {
           )}
         </div>
         <div className="mainContainer">
-          {section === 1 && (
+          {section === Sections.projects && (
             <div className="projects">
-              {projectsView === 1 && (
+              {projectsView === ProjectView.map && (
                 <div className="map">
                   <Header
                     data={alphaData}
@@ -330,7 +354,7 @@ const Home = ({ userDetails, logOut, baseURL }) => {
                   <MapContainerComponent data={alphaData} />
                 </div>
               )}
-              {projectsView === 2 && (
+              {projectsView === ProjectView.table && (
                 <div className="project_container">
                   <div className="matrices">
                     <Metric
@@ -343,8 +367,8 @@ const Home = ({ userDetails, logOut, baseURL }) => {
                       metrice={fullData?.length}
                       logo={file1}
                     />
-                    {(userDetails.userType == "Admin" ||
-                      userDetails.userType == "User") && (
+                    {(userDetails.type == "Admin" ||
+                      userDetails.type == "User") && (
                       <div className="addNew" onClick={() => setshowAdd(true)}>
                         {" "}
                         Add Project <img src={add} alt="" />
@@ -352,15 +376,13 @@ const Home = ({ userDetails, logOut, baseURL }) => {
                     )}
                   </div>
                   <div>
-                    <Project fullData={fullData} />
+                    <ProjectTable fullData={fullData} />
                   </div>
                 </div>
               )}
             </div>
           )}
-          {section === 2 && (
-            <Users baseURL={baseURL} userDetails={userDetails} />
-          )}
+          {section === Sections.users && <Users />}
         </div>
       </div>
     </div>

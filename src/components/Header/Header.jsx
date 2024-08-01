@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import "./Header.css";
 import Dropdown from "../Dropdown/Dropdown";
 import {
-  getLocationOptions,
+  getAmountOptions,
   getCategoryOptions,
   getClientOptions,
-  getAmountOptions,
+  getLocationOptions,
   getProjectManagerOptions,
-} from "../../helper";
+} from "../../utils/helper";
 
 const Header = ({ data, setData, originalData }) => {
   const [filters, setFilters] = useState({
