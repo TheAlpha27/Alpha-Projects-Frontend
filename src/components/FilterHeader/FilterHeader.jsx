@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 import React, { useEffect, useState } from "react";
-import "./Header.css";
+import "./FilterHeader.css";
 import Dropdown from "../Dropdown/Dropdown";
 import {
   getAmountOptions,
@@ -10,7 +10,7 @@ import {
   getProjectManagerOptions,
 } from "../../utils/helper";
 
-const Header = ({ data, setData, originalData }) => {
+const FilterHeader = ({ data, setData, originalData }) => {
   const [filters, setFilters] = useState({
     location: "",
     category: "",
@@ -123,4 +123,4 @@ const Header = ({ data, setData, originalData }) => {
   );
 };
 
-export default Header;
+export default FilterHeader;

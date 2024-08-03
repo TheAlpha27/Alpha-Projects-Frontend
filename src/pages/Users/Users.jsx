@@ -42,6 +42,18 @@ const Users = () => {
   };
 
   const onUserTypeChange = async (payload) => {
+    if (
+      payload.userUpdates.findIndex(
+        (user) => user.email === userDetails.email
+      ) !== -1
+    ) {
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: "Action not allowed on yourself",
+        type: "Error",
+      });
+      return;
+    }
     try {
       const data = await axios.put(baseURL + "/change-user-type", payload, {
         headers: {
@@ -67,6 +79,18 @@ const Users = () => {
   };
 
   const onUserStatusChange = async (payload) => {
+    if (
+      payload.userUpdates.findIndex(
+        (user) => user.email === userDetails.email
+      ) !== -1
+    ) {
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: "Action not allowed on yourself",
+        type: "Error",
+      });
+      return;
+    }
     try {
       const data = await axios.put(baseURL + "/change-user-status", payload, {
         headers: {
@@ -184,17 +208,19 @@ const Users = () => {
             metrice={metricesCount(usersData, "Guest")}
           />
         </div>
-        {usersData.length > 0 && (
-          <Table
-            type={"user"}
-            checkbox={true}
-            columns={userColumns}
-            data={usersData}
-            name={"All Users"}
-            onUserTypeChange={onUserTypeChange}
-            onUserStatusChange={onUserStatusChange}
-          />
-        )}
+        <div style={{ flexGrow: '1' }}>
+          {usersData.length > 0 && (
+            <Table
+              type={"user"}
+              checkbox={true}
+              columns={userColumns}
+              data={usersData}
+              name={"All Users"}
+              onUserTypeChange={onUserTypeChange}
+              onUserStatusChange={onUserStatusChange}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
