@@ -1,5 +1,5 @@
-export const baseURL = "http://localhost:4000";
-// export const baseURL = "https://alpha-projects-backend.onrender.com";
+// export const baseURL = "http://localhost:4000";
+export const baseURL = "https://alpha-projects-backend.onrender.com";
 
 export const UserTypes = {
   user: "User",
