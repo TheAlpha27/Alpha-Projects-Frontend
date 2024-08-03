@@ -225,9 +225,8 @@ const Home = () => {
         <div className="leftBar">
           <div
             onClick={() => setSection(1)}
-            className={`sectionIcon pointer ${
-              section === 1 ? "activeSection" : ""
-            }`}
+            className={`sectionIcon pointer ${section === 1 ? "activeSection" : ""
+              }`}
           >
             <div className={"sectionIconImg"}>
               <img src={projects} alt="" />
@@ -237,9 +236,8 @@ const Home = () => {
           {userDetails?.type !== UserTypes.guest && (
             <div
               onClick={() => setSection(2)}
-              className={`sectionIcon pointer ${
-                section === 2 ? "activeSection" : ""
-              }`}
+              className={`sectionIcon pointer ${section === 2 ? "activeSection" : ""
+                }`}
             >
               <div className={"sectionIconImg"}>
                 <img src={users} alt="" />
@@ -274,15 +272,15 @@ const Home = () => {
                       metrice={fullData?.length}
                       logo={file1}
                     />
-                    {(userDetails.type == "Admin" ||
-                      userDetails.type == "User") && (
-                      <div className="addNew" onClick={() => setshowAdd(true)}>
-                        {" "}
-                        Add Project <img src={add} alt="" />
-                      </div>
-                    )}
+                    {(userDetails.type == UserTypes.admin ||
+                      userDetails.type == UserTypes.user) && (
+                        <div className="addNew" onClick={() => setshowAdd(true)}>
+                          {" "}
+                          Add Project <img src={add} alt="" />
+                        </div>
+                      )}
                   </div>
-                  <div style={{height: '100%'}}>
+                  <div style={{ height: '100%' }}>
                     <ProjectTable fullData={fullData} />
                   </div>
                 </div>
