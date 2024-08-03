@@ -162,6 +162,39 @@ const Users = () => {
     }
   };
 
+  const handleDeleteUsers = async (payload) => {
+    if (payload.findIndex((email) => email === userDetails.email) !== -1) {
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: "Action not allowed on yourself",
+        type: "Error",
+      });
+      return;
+    }
+    try {
+      const data = await axios.post(baseURL + "/delete-users", payload, {
+        headers: {
+          Authorization: userDetails.token,
+        },
+      });
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: data.data.message,
+        type: "Success",
+      });
+      fetchData();
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
+      }
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: error.response.data.message,
+        type: "Error",
+      });
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -208,7 +241,7 @@ const Users = () => {
             metrice={metricesCount(usersData, "Guest")}
           />
         </div>
-        <div style={{ flexGrow: '1' }}>
+        <div style={{ flexGrow: "1" }}>
           {usersData.length > 0 && (
             <Table
               type={"user"}
@@ -218,6 +251,7 @@ const Users = () => {
               name={"All Users"}
               onUserTypeChange={onUserTypeChange}
               onUserStatusChange={onUserStatusChange}
+              handleDeleteUsers={handleDeleteUsers}
             />
           )}
         </div>

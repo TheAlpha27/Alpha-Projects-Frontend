@@ -3,7 +3,7 @@ import Table from "../../components/Table/Table";
 import "./ProjectTable.css";
 import moment from "moment";
 
-const ProjectTable = (fullData) => {
+const ProjectTable = ({ fullData, handleProjectClick }) => {
   const userColumns = [
     {
       columnName: "Project Name",
@@ -58,7 +58,7 @@ const ProjectTable = (fullData) => {
 
   const [requiredData, setRequiredData] = useState([]);
   useEffect(() => {
-    setRequiredData(createUserTableData(fullData.fullData));
+    setRequiredData(createUserTableData(fullData));
   }, [fullData]);
 
   return (
@@ -68,6 +68,7 @@ const ProjectTable = (fullData) => {
       columns={userColumns}
       data={requiredData}
       name={"Projects"}
+      handleProjectClick={handleProjectClick}
     />
   );
 };

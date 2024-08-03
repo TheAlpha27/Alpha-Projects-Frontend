@@ -4,6 +4,8 @@ import "./Table.css";
 import Search from "../../icons/assets/search.svg";
 import Dropdown from "../Dropdown/Dropdown";
 import { ProjectStatus, UserStatus, UserTypes } from "../../utils/constants";
+import Delete from "../../icons/delete.svg";
+import DeleteGray from "../../icons/deleteGray.svg";
 
 const userTypeOptions = [
   { value: UserTypes.guest, bgColor: "#DFEBFD", textColor: "#4C6FA5" },
@@ -91,6 +93,8 @@ const Table = ({
   checkbox,
   onUserTypeChange,
   onUserStatusChange,
+  handleProjectClick,
+  handleDeleteUsers,
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -229,6 +233,30 @@ const Table = ({
               name={"Update Status"}
               flowtype={"user"}
             />
+            {selectedStatus ? (
+              <img
+                src={Delete}
+                height={28}
+                alt=""
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  const emails = selectedRows.map(
+                    (selectedRow) => selectedRow?.Email?.value
+                  );
+                  if (emails.length > 0) {
+                    setSelectedRows([]);
+                    handleDeleteUsers(emails);
+                  }
+                }}
+              />
+            ) : (
+              <img
+                src={DeleteGray}
+                height={28}
+                alt=""
+                style={{ cursor: "not-allowed" }}
+              />
+            )}
           </>
         )}
       </div>
@@ -278,7 +306,7 @@ const Table = ({
                       key={column.key}
                     >
                       {row[column.key] &&
-                        row[column.key].type === "typeChip" ? (
+                      row[column.key].type === "typeChip" ? (
                         <Chip
                           value={row[column.key].value}
                           options={userTypeOptions}
@@ -305,7 +333,11 @@ const Table = ({
           </tbody>
         </table>
       ) : (
-        <table cellSpacing="0" cellPadding="0" style={{ width: "91.8vw", flexGrow: '1' }}>
+        <table
+          cellSpacing="0"
+          cellPadding="0"
+          style={{ width: "91.8vw", flexGrow: "1" }}
+        >
           <div className="ActualTableDiv">
             <thead>
               <tr style={{ position: "relative", backgroundColor: "white" }}>
@@ -352,9 +384,16 @@ const Table = ({
                           fontWeight:
                             index === 0 || index === 5 ? "800" : "100",
                           borderRight: index === 0 && "1px solid gray",
+                          cursor: column.key === "ProjectName" ? "pointer" : "",
+                          color: column.key === "ProjectName" ? "#f16524" : "",
                         }}
                         className="table-data"
                         key={column.key}
+                        onClick={() => {
+                          if (column.key === "ProjectName") {
+                            handleProjectClick(row[column.key].value);
+                          }
+                        }}
                       >
                         {row[column.key]?.value}
                       </td>

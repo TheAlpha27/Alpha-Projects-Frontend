@@ -1,5 +1,6 @@
 import React from "react";
 import Input from "../Input/Input";
+import Delete from "../../icons/delete.svg";
 
 const AddProjectModal = ({
   setNewProject,
@@ -7,11 +8,34 @@ const AddProjectModal = ({
   errors,
   handleSave,
   handleClose,
+  edit,
+  handleDelete,
 }) => {
   return (
     <div className="addProjectModal">
       <div className="modalCont">
-        <div>Add New Project</div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {edit ? (
+            <>
+              <div>Edit Project</div>
+              <img
+                style={{ cursor: "pointer" }}
+                height={18}
+                onClick={handleDelete}
+                src={Delete}
+                alt=""
+              />
+            </>
+          ) : (
+            "Add New Project"
+          )}
+        </div>
         <Input
           type={"text"}
           placeholder={"Project Name"}
@@ -96,7 +120,7 @@ const AddProjectModal = ({
               handleSave();
             }}
           >
-            Save
+            {edit ? "Update" : "Save"}
           </div>
           <div
             className="close"

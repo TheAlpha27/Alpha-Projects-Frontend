@@ -56,7 +56,7 @@ const Home = () => {
   const [alphaData, setAlphaData] = useState([]);
   const [section, setSection] = useState(Sections.projects);
   const [projectsView, setProjectsView] = useState(ProjectView.map);
-  const [showAdd, setshowAdd] = useState(false);
+  const [showAdd, setshowAdd] = useState({ show: false, edit: false });
   const [newProject, setNewProject] = useState({ ...InitialProject });
   const [errors, setErrors] = useState({ ...InitialProjectErrors });
   const [popUpObjArr, setPopUpObjArr] = useState([
@@ -105,51 +105,118 @@ const Home = () => {
     let hasErrors = false;
     let temp = { ...errors };
     for (const key in newProject) {
-      console.log(key);
-      if (
-        newProject[key] == "" ||
-        newProject[key] == null ||
-        newProject[key] < 0
-      ) {
-        temp[key] = true;
-        hasErrors = true;
+      if (key !== "__v") {
+        if (
+          newProject[key] == "" ||
+          newProject[key] == null ||
+          newProject[key] < 0
+        ) {
+          temp[key] = true;
+          hasErrors = true;
+        }
       }
     }
     setErrors(temp);
+
     if (!hasErrors) {
-      try {
-        const res = await axios.post(baseURL + "/addProject", newProject, {
+      if (showAdd.edit) {
+        try {
+          const res = await axios.put(baseURL + "/updateProject", newProject, {
+            headers: {
+              Authorization: userDetails.token,
+            },
+          });
+          setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+            show: true,
+            msg: res.data.message,
+            type: "Success",
+          });
+          fetchData();
+          handleClose();
+        } catch (error) {
+          if (error.response.status === 401) {
+            logOut();
+          }
+          if (error.response.data.message == "Invalid city or country") {
+            setErrors({ ...errors, city: true, country: true });
+          }
+          setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+            show: true,
+            msg: error.response.data.message,
+            type: "Error",
+          });
+        }
+      } else {
+        try {
+          const res = await axios.post(baseURL + "/addProject", newProject, {
+            headers: {
+              Authorization: userDetails.token,
+            },
+          });
+          setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+            show: true,
+            msg: res.data.message,
+            type: "Success",
+          });
+          fetchData();
+          handleClose();
+        } catch (error) {
+          if (error.response.status === 401) {
+            logOut();
+          }
+          if (error.response.data.message == "Invalid city or country") {
+            setErrors({ ...errors, city: true, country: true });
+          }
+          setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+            show: true,
+            msg: error.response.data.message,
+            type: "Error",
+          });
+        }
+      }
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const res = await axios.delete(
+        baseURL + "/deleteProject/" + newProject._id,
+        {
           headers: {
             Authorization: userDetails.token,
           },
-        });
-        setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
-          show: true,
-          msg: res.data.message,
-          type: "Success",
-        });
-        fetchData();
-        handleClose();
-      } catch (error) {
-        if (error.response.status === 401) {
-          logOut();
         }
-        if (error.response.data.message == "Invalid city or country") {
-          setErrors({ ...errors, city: true, country: true });
-        }
-        setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
-          show: true,
-          msg: error.response.data.message,
-          type: "Error",
-        });
+      );
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: res.data.message,
+        type: "Success",
+      });
+      fetchData();
+      handleClose();
+    } catch (error) {
+      if (error.response.status === 401) {
+        logOut();
       }
+      setPopUpObjFunc(popUpObjArr, setPopUpObjArr, {
+        show: true,
+        msg: error.response.data.message,
+        type: "Error",
+      });
     }
   };
 
   const handleClose = () => {
     setNewProject({ ...InitialProject });
     setErrors({ ...InitialProjectErrors });
-    setshowAdd(false);
+    setshowAdd({ show: false, edit: false });
+  };
+
+  const handleProjectClick = (projectName) => {
+    setNewProject({
+      ...fullData.filter((data) => data.project_name === projectName)[0],
+    });
+    setshowAdd({ show: true, edit: true });
   };
 
   return (
@@ -171,13 +238,15 @@ const Home = () => {
       </div>
       {(userDetails?.type == UserTypes.admin ||
         userDetails?.type == UserTypes.user) &&
-        showAdd && (
+        showAdd.show && (
           <AddProjectModal
             setNewProject={setNewProject}
             newProject={newProject}
             errors={errors}
             handleClose={handleClose}
             handleSave={handleSave}
+            edit={showAdd.edit}
+            handleDelete={handleDelete}
           />
         )}
       <div className="topBar">
@@ -225,8 +294,9 @@ const Home = () => {
         <div className="leftBar">
           <div
             onClick={() => setSection(1)}
-            className={`sectionIcon pointer ${section === 1 ? "activeSection" : ""
-              }`}
+            className={`sectionIcon pointer ${
+              section === 1 ? "activeSection" : ""
+            }`}
           >
             <div className={"sectionIconImg"}>
               <img src={projects} alt="" />
@@ -236,8 +306,9 @@ const Home = () => {
           {userDetails?.type !== UserTypes.guest && (
             <div
               onClick={() => setSection(2)}
-              className={`sectionIcon pointer ${section === 2 ? "activeSection" : ""
-                }`}
+              className={`sectionIcon pointer ${
+                section === 2 ? "activeSection" : ""
+              }`}
             >
               <div className={"sectionIconImg"}>
                 <img src={users} alt="" />
@@ -274,14 +345,20 @@ const Home = () => {
                     />
                     {(userDetails.type == UserTypes.admin ||
                       userDetails.type == UserTypes.user) && (
-                        <div className="addNew" onClick={() => setshowAdd(true)}>
-                          {" "}
-                          Add Project <img src={add} alt="" />
-                        </div>
-                      )}
+                      <div
+                        className="addNew"
+                        onClick={() => setshowAdd({ show: true, edit: false })}
+                      >
+                        {" "}
+                        Add Project <img src={add} alt="" />
+                      </div>
+                    )}
                   </div>
-                  <div style={{ height: '100%' }}>
-                    <ProjectTable fullData={fullData} />
+                  <div style={{ height: "100%" }}>
+                    <ProjectTable
+                      fullData={fullData}
+                      handleProjectClick={handleProjectClick}
+                    />
                   </div>
                 </div>
               )}
