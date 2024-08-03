@@ -278,7 +278,7 @@ const Table = ({
                       key={column.key}
                     >
                       {row[column.key] &&
-                      row[column.key].type === "typeChip" ? (
+                        row[column.key].type === "typeChip" ? (
                         <Chip
                           value={row[column.key].value}
                           options={userTypeOptions}
@@ -305,7 +305,7 @@ const Table = ({
           </tbody>
         </table>
       ) : (
-        <table cellSpacing="0" cellPadding="0" style={{ width: "91.8vw" }}>
+        <table cellSpacing="0" cellPadding="0" style={{ width: "91.8vw", flexGrow: '1' }}>
           <div className="ActualTableDiv">
             <thead>
               <tr style={{ position: "relative", backgroundColor: "white" }}>

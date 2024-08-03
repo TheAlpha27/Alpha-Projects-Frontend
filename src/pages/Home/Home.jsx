@@ -14,7 +14,6 @@ import UserDropCard from "../../components/UserDropCard/UserDropCard";
 import { useNavigate } from "react-router-dom";
 import Metric from "../../components/metrics/Metric";
 import add from "../../icons/add.svg";
-import Input from "../../components/Input/Input";
 import NotificationPop from "../../components/NotificationPop/NotificationPop";
 import {
   baseURL,
@@ -97,7 +96,7 @@ const Home = () => {
     if (userDetails) {
       fetchData();
     }
-  }, []);
+  }, [userDetails]);
 
   const navigate = useNavigate();
 
@@ -283,7 +282,7 @@ const Home = () => {
                       </div>
                     )}
                   </div>
-                  <div>
+                  <div style={{height: '100%'}}>
                     <ProjectTable fullData={fullData} />
                   </div>
                 </div>

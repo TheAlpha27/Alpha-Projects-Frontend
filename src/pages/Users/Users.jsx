@@ -208,17 +208,19 @@ const Users = () => {
             metrice={metricesCount(usersData, "Guest")}
           />
         </div>
-        {usersData.length > 0 && (
-          <Table
-            type={"user"}
-            checkbox={true}
-            columns={userColumns}
-            data={usersData}
-            name={"All Users"}
-            onUserTypeChange={onUserTypeChange}
-            onUserStatusChange={onUserStatusChange}
-          />
-        )}
+        <div style={{ flexGrow: '1' }}>
+          {usersData.length > 0 && (
+            <Table
+              type={"user"}
+              checkbox={true}
+              columns={userColumns}
+              data={usersData}
+              name={"All Users"}
+              onUserTypeChange={onUserTypeChange}
+              onUserStatusChange={onUserStatusChange}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

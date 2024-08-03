@@ -12,8 +12,10 @@
     right: 48px;
   }
   .tableContainer {
-    /* border: 2px solid red; */
     padding: 20px;
+    height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
   }
 
   .uppeContainers{
